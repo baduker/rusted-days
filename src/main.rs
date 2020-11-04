@@ -3,7 +3,7 @@ use std::io::Write;
 use chrono::{NaiveDateTime, DateTime, Utc, Datelike, NaiveDate};
 
 fn main() {
-    let prompt = "What's your date (DD/MM/YYYY): ";
+    let prompt = "What's your date (DD/MM/YYYY)?: ";
     let date = input(prompt).expect("Something went wrong! o.O");
     show_interpretation(parse_date(date));
 }
@@ -29,7 +29,6 @@ fn parse_date(date: String) -> DateTime<Utc> {
     DateTime::<Utc>::from_utc(naive_datetime, Utc)
 }
 
-#[allow(dead_code)]
 fn get_days_in_month(year: i32, month: u32) -> i64 {
     NaiveDate::from_ymd(
         match month {
@@ -54,10 +53,15 @@ fn show_interpretation(date: DateTime<Utc>) {
 
     let years = Utc::now().year() - date.year();
     let months = Utc::now().month() - date.month();
-    // let days_in_month = get_days_in_month(Utc::now().year(), Utc::now().month());
-    let days = date.day() - Utc::now().day();
 
-    println!("Timespan:\n{} year(s), {} month(s), {} day(s)", years, months, days);
-    println!("{} weeks", total_days.num_weeks());
+    if date.day() > Utc::now().day() {
+        let days = get_days_in_month(date.year(), date.month()) - date.day() as i64;
+            println!("Timespan:\n{} year(s), {} month(s), {} day(s)", years, months - 1, days);
+    } else {
+        let days = Utc::now().day() - date.day();
+            println!("Timespan:\n{} year(s), {} month(s), {} day(s)", years, months, days);
+    }
+
+    println!("{} weeks and {} day(s)", total_days.num_weeks(), date.day());
     println!("{:.2} years", total_days.num_days() as f32 / 365_f32);
 }
