@@ -62,6 +62,9 @@ fn show_interpretation(date: DateTime<Utc>) {
             println!("Timespan:\n{} year(s), {} month(s), {} day(s)", years, months, days);
     }
 
-    println!("{} weeks and {} day(s)", total_days.num_weeks(), date.day());
+    let num_day_today = Utc::now().weekday().num_days_from_sunday();
+    let num_day_date = date.weekday().num_days_from_sunday();
+
+    println!("{} weeks and {} day(s)", total_days.num_weeks(), num_day_today - num_day_date);
     println!("{:.2} years", total_days.num_days() as f32 / 365_f32);
 }
