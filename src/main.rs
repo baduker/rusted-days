@@ -29,6 +29,7 @@ fn parse_date(date: String) -> DateTime<Utc> {
     DateTime::<Utc>::from_utc(naive_datetime, Utc)
 }
 
+#[allow(dead_code)]
 fn get_days_in_month(year: i32, month: u32) -> i64 {
     NaiveDate::from_ymd(
         match month {
@@ -48,23 +49,31 @@ fn get_days_in_month(year: i32, month: u32) -> i64 {
 fn show_interpretation(date: DateTime<Utc>) {
     println!("Input interpretation: days since {}", date.format("%A, %B %d, %Y"));
 
+    // let current_year = Utc::now().year();
+    // let current_month = Utc::now().month();
+
     let total_days = Utc::now() - date;
     println!("Result:\n{} days have rusted away ¯\\_(ツ)_/¯", total_days.num_days());
 
-    let years = Utc::now().year() - date.year();
-    let months = Utc::now().month() - date.month();
+    println!("{}", Utc::now() - RelativeDelta::with_years(35).and_months(1).and_days(9).new());
 
-    if date.day() > Utc::now().day() {
-        let days = get_days_in_month(date.year(), date.month()) - date.day() as i64;
-            println!("Timespan:\n{} year(s), {} month(s), {} day(s)", years, months - 1, days);
-    } else {
-        let days = Utc::now().day() - date.day();
-            println!("Timespan:\n{} year(s), {} month(s), {} day(s)", years, months, days);
-    }
+    // let years = current_year - date.year();
+    // let months = current_month as i64 - date.month() as i64;
+    //
+    // let current_month_days = get_days_in_month(current_year, current_month);
+    // let month_days_date = get_days_in_month(date.year(), date.month());
 
-    let num_day_today = Utc::now().weekday().num_days_from_sunday();
-    let num_day_date = date.weekday().num_days_from_sunday();
+    // let days = Utc::now().day() as i64 - date.day() as i64;
+    // println!("Timespan:\n{} year(s), {} month(s), {} day(s)", years, months as i64, month_days_date - current_month_days);
 
-    println!("{} weeks and {} day(s)", total_days.num_weeks(), num_day_today - num_day_date);
+    let num_weekday_today = Utc::now()
+        .weekday()
+        .num_days_from_sunday();
+
+    let num_weekday_date = date
+        .weekday()
+        .num_days_from_sunday();
+
+    println!("{} weeks and {} day(s)", total_days.num_weeks(), num_weekday_today - num_weekday_date);
     println!("{:.2} years", total_days.num_days() as f32 / 365_f32);
 }
