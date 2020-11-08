@@ -55,8 +55,6 @@ fn show_interpretation(date: DateTime<Utc>) {
     let total_days = Utc::now() - date;
     println!("Result:\n{} days have rusted away ¯\\_(ツ)_/¯", total_days.num_days());
 
-    println!("{}", Utc::now() - RelativeDelta::with_years(35).and_months(1).and_days(9).new());
-
     // let years = current_year - date.year();
     // let months = current_month as i64 - date.month() as i64;
     //
@@ -74,6 +72,7 @@ fn show_interpretation(date: DateTime<Utc>) {
         .weekday()
         .num_days_from_sunday();
 
-    println!("{} weeks and {} day(s)", total_days.num_weeks(), num_weekday_today - num_weekday_date);
+    let passing_week_days = (num_weekday_today as i64 - num_weekday_date as i64).abs();
+    println!("{} weeks and {} day(s)", total_days.num_weeks(), passing_week_days);
     println!("{:.2} years", total_days.num_days() as f32 / 365_f32);
 }
